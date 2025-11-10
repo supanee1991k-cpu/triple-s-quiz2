@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triple S Quiz</title>
+<style>
+  body {
+    font-family: "Prompt", sans-serif;
+    background: linear-gradient(180deg, #0d47a1, #1976d2);
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+  }
+  h1 {
+    margin-top: 20px;
+    font-size: 2em;
+  }
+  .question-box {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 20px;
+  }
+  .question {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+  }
+  button {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    background: #fff;
+    color: #1976d2;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover {
+    background: #e3f2fd;
+  }
+  #feedback {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  #timer {
+    font-size: 1.2em;
+    background: #ffb300;
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 10px;
+    color: black;
+    margin-top: 10px;
+  }
+  #score {
+    font-size: 1.2em;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧠 Triple S Quiz</h1>
+    <div id="timer">เวลา: 60 วินาที</div>
+    <div id="score">คะแนน: 0</div>
+    <div class="question-box">
+      <div id="question" class="question"></div>
+      <div id="choices"></div>
+      <div id="feedback"></div>
+    </div>
+  </div>
+
+<script>
+const questions = [
+  { q: "พนักงานสวมหมวกนิรภัย เสื้อสะท้อนแสง และรองเท้าเซฟตี้ก่อนเข้าพื้นที่ทำงาน", a: "Safety" },
+  { q: "มีการสแกนหน้าพนักงานก่อนเข้าทำงาน", a: "Security" },
+  { q: "พนักงานไม่แชร์ User และ Password กับบุคคลอื่น", a: "Security" },
+  { q: "ล็อกประตูโกดังหลังเลิกงานทุกครั้ง", a: "Security" },
+  { q: "แยกขยะทั่วไป รีไซเคิล และขยะอันตรายออกจากกัน", a: "Sustainability" },
+  { q: "ใช้ถังดับเพลิงตรวจสอบสภาพพร้อมใช้งานเสมอ", a: "Safety" },
+  { q: "ใช้ไฟฟ้าเฉพาะที่จำเป็นและปิดเมื่อเลิกใช้", a: "Sustainability" },
+  { q: "ตรวจอุปกรณ์ก่อนใช้งาน", a: "Safety" },
+  { q: "เดินในเส้นทางปลอดภัย", a: "Safety" },
+  { q: "แจ้งเจ้าหน้าที่เซฟตี้ทันทีเมื่อพบสารเคมีรั่วไหลในพื้นที่ทำงาน", a: "Safety" },
+  { q: "นำกระดาษ re-use กลับมาใช้", a: "Sustainability" }
+];
+
+let index = 0;
+let score = 0;
+let timeLeft = 60;
+const timerEl = document.getElementById("timer");
+const questionEl = document.getElementById("question");
+const choicesEl = document.getElementById("choices");
+const feedbackEl = document.getElementById("feedback");
+const scoreEl = document.getElementById("score");
+
+function showQuestion() {
+  if (index >= questions.length) {
+    endQuiz();
+    return;
+  }
+  const q = questions[index];
+  questionEl.textContent = `ข้อที่ ${index + 1}: ${q.q}`;
+  choicesEl.innerHTML = "";
+
+  ["Safety", "Security", "Sustainability"].forEach(choice => {
+    const btn = document.createElement("button");
+    btn.textContent = choice;
+    btn.onclick = () => checkAnswer(choice);
+    choicesEl.appendChild(btn);
+  });
+}
+
+function checkAnswer(answer) {
+  const correct = questions[index].a;
+  if (answer === correct) {
+    feedbackEl.textContent = "✅ ถูกต้อง! +1 คะแนน";
+    feedbackEl.style.color = "#00e676";
+    score++;
+  } else {
+    feedbackEl.textContent = "❌ ตอบผิด!";
+    feedbackEl.style.color = "#ff5252";
+  }
+  scoreEl.textContent = `คะแนน: ${score}`;
+  index++;
+  setTimeout(showQuestion, 1000);
+}
+
+function endQuiz() {
+  questionEl.textContent = "🎉 จบเกมแล้ว!";
+  choicesEl.innerHTML = "";
+  feedbackEl.textContent = `คุณได้คะแนนทั้งหมด ${score} คะแนน จาก ${questions.length} ข้อ`;
+  clearInterval(timer);
+}
+
+function updateTimer() {
+  timeLeft--;
+  timerEl.textContent = `เวลา: ${timeLeft} วินาที`;
+  if (timeLeft <= 0) {
+    endQuiz();
+  }
+}
+
+const timer = setInterval(updateTimer, 1000);
+showQuestion();
+</script>
+</body>
+</html>
